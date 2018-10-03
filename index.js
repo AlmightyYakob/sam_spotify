@@ -1,11 +1,11 @@
-let SpotifyWebApi = require('spotify-web-api-node');
-let { client_id, client_secret } = require('./credentials.js');
+const SpotifyWebApi = require('spotify-web-api-node');
+const { client_id, client_secret } = require('./credentials.js');
 
 // credentials are optional
-let spotifyApi = new SpotifyWebApi({
+const spotifyApi = new SpotifyWebApi({
     clientId: client_id,
     clientSecret: client_secret,
-    redirectUri: 'http://www.example.com/callback'
+    redirectUri: 'http://www.example.com/callback',
 });
 
 spotifyApi.getMyCurrentPlaybackState({})
