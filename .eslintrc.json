@@ -9,6 +9,7 @@
         "sourceType": "module"
     },
     "rules": {
+        "prefer-arrow-callback": "error",
         "indent": [
             "error",
             4
