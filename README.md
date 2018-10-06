@@ -1,1 +1,1 @@
-# sam_spotify
+# Sam's Spotify Twitter Bot
