@@ -8,44 +8,58 @@ import {
     redirect_uri,
     access_token,
     refresh_token,
-} from "./spotify_credentials.json";
+} from "./credentials/spotify_credentials.json";
 
-const CREDENTIALS_FILE = "./spotify_credentials.json";
+const CREDENTIALS_FILE = "./credentials/spotify_credentials.json";
 
 const spotifyApi = new SpotifyWebApi({
     clientId: client_id,
     clientSecret: client_secret,
     redirectUri: redirect_uri,
 });
+
 spotifyApi.setAccessToken(access_token);
 spotifyApi.setRefreshToken(refresh_token);
 
-const getPlayback = () => {
+export const getPlayback = (callback) => {
     spotifyApi.getMyCurrentPlaybackState({}).then(
         data => {
             // Output items
-            console.log(data);
+            // console.log(JSON.stringify(data, null, 4));
             if (_.isEmpty(data.body)) {
                 console.log("Not playing anything!");
+                // callback({});
             } else {
-                console.log(data.body.item);
-                console.log(
-                    `Now Playing: ${data.body.item.name} by ${
-                        data.body.item.artists[0].name
-                    }`
+                // Relevant paths:
+                // data.body.item.external_urls.spotify = song link
+                // data.body.item.artists[0] = artist
+                // data.body.item.name = name
+                // data.body.item.id = song id
+                // data.body.item.album.images[0].url = album image
+
+                const selected = _.pick(data.body.item,
+                    [
+                        'external_urls.spotify',
+                        'artists[0]',
+                        'name',
+                        'id',
+                        'album.images[0].url',
+                    ]
                 );
-                console.log("ID: ", data.body.item.id);
+
+                callback(selected);
             }
         },
         err => {
             console.log("Something went wrong!", err);
-            //FIX to finish call after
-            refreshAccessToken();
+            refreshAccessToken(() => {
+                getPlayback(callback);
+            });
         }
     );
 };
 
-const refreshAccessToken = () => {
+const refreshAccessToken = (callback) => {
     spotifyApi.refreshAccessToken().then(
         data => {
             // Save the access token so that it's used in future calls
@@ -54,18 +68,17 @@ const refreshAccessToken = () => {
 
             console.log("The access token has been refreshed!");
 
+            // Write access token to credentials file to be used in the future
             const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_FILE));
             credentials.access_token = spotifyApi.getAccessToken();
             fs.writeFileSync(
                 CREDENTIALS_FILE,
                 JSON.stringify(credentials, null, 4)
             );
-            return;
+            callback();
         },
         err => {
             console.log("Could not refresh access token", err);
         }
     );
 };
-
-getPlayback();
