@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index.js --exec 'yarn test && babel-node'",
-    "test": "eslint index.js"
+    "start": "yarn test && babel-node index.js",
+    "test": "eslint *.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.3",

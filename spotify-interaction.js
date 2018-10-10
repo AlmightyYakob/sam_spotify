@@ -24,11 +24,9 @@ spotifyApi.setRefreshToken(refresh_token);
 export const getPlayback = (callback) => {
     spotifyApi.getMyCurrentPlaybackState({}).then(
         data => {
-            // Output items
-            // console.log(JSON.stringify(data, null, 4));
             if (_.isEmpty(data.body)) {
                 console.log("Not playing anything!");
-                // callback({});
+                callback({});
             } else {
                 // Relevant paths:
                 // data.body.item.external_urls.spotify = song link
