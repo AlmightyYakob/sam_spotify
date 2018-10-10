@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "yarn test && babel-node index.js",
-    "test": "eslint *.js"
+    "test": "eslint *.js",
+    "build": "yarn babel src/ --out-dir bin/ --copy-files"
   },
   "dependencies": {
     "cookie-parser": "^1.4.3",
