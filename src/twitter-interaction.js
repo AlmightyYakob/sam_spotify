@@ -9,7 +9,7 @@ import {
     access_token,
     access_token_secret,
     // redirect_uri,
-} from "./credentials/twitter_credentials.json";
+} from "../credentials/twitter_credentials.json";
 
 const twitter = new Twit({
     consumer_key: api_key,

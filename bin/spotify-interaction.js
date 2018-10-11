@@ -11,11 +11,15 @@ var _lodash = _interopRequireDefault(require("lodash"));
 
 var _fs = _interopRequireDefault(require("fs"));
 
-var _spotify_credentials = require("./credentials/spotify_credentials.json");
+var _path = _interopRequireDefault(require("path"));
+
+var _spotify_credentials = require("../credentials/spotify_credentials.json");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var CREDENTIALS_FILE = "./credentials/spotify_credentials.json";
+var _dirname = _path.default.resolve();
+
+var CREDENTIALS_FILE = "".concat(_dirname, "/credentials/spotify_credentials.json");
 var spotifyApi = new _spotifyWebApiNode.default({
   clientId: _spotify_credentials.client_id,
   clientSecret: _spotify_credentials.client_secret,
@@ -30,12 +34,6 @@ var getPlayback = function getPlayback(callback) {
       console.log("Not playing anything!");
       callback({});
     } else {
-      // Relevant paths:
-      // data.body.item.external_urls.spotify = song link
-      // data.body.item.artists[0] = artist
-      // data.body.item.name = name
-      // data.body.item.id = song id
-      // data.body.item.album.images[0].url = album image
       var selected = _lodash.default.pick(data.body.item, ['external_urls.spotify', 'artists[0]', 'name', 'id', 'album.images[0].url']);
 
       callback(selected);
@@ -45,7 +43,10 @@ var getPlayback = function getPlayback(callback) {
     refreshAccessToken(function () {
       getPlayback(callback);
     });
+  }).catch(function (rej) {
+    console.log("REJECT: ", rej);
   });
+  ;
 };
 
 exports.getPlayback = getPlayback;
@@ -65,5 +66,7 @@ var refreshAccessToken = function refreshAccessToken(callback) {
     callback();
   }, function (err) {
     console.log("Could not refresh access token", err);
+  }).catch(function (rej) {
+    console.log("REJECT: ", rej);
   });
 };

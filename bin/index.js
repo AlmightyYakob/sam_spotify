@@ -9,7 +9,7 @@ var _twitterInteraction = require("./twitter-interaction");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import fs from "fs";
-var MINUTES_TO_WAIT = 5;
+var MINUTES_TO_WAIT = 1;
 var MS_TO_WAIT = MINUTES_TO_WAIT * 60 * 1000;
 var currentSongID = null;
 

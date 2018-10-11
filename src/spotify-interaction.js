@@ -1,6 +1,7 @@
 import SpotifyWebApi from "spotify-web-api-node";
 import _ from "lodash";
 import fs from "fs";
+import path from "path";
 
 import {
     client_id,
@@ -8,9 +9,9 @@ import {
     redirect_uri,
     access_token,
     refresh_token,
-} from "./credentials/spotify_credentials.json";
-
-const CREDENTIALS_FILE = "./credentials/spotify_credentials.json";
+} from "../credentials/spotify_credentials.json";
+const __dirname = path.resolve();
+const CREDENTIALS_FILE = `${__dirname}/credentials/spotify_credentials.json`;
 
 const spotifyApi = new SpotifyWebApi({
     clientId: client_id,
@@ -28,13 +29,6 @@ export const getPlayback = (callback) => {
                 console.log("Not playing anything!");
                 callback({});
             } else {
-                // Relevant paths:
-                // data.body.item.external_urls.spotify = song link
-                // data.body.item.artists[0] = artist
-                // data.body.item.name = name
-                // data.body.item.id = song id
-                // data.body.item.album.images[0].url = album image
-
                 const selected = _.pick(data.body.item,
                     [
                         'external_urls.spotify',
@@ -54,7 +48,9 @@ export const getPlayback = (callback) => {
                 getPlayback(callback);
             });
         }
-    );
+    ).catch(rej => {
+        console.log("REJECT: ", rej);
+    });;
 };
 
 const refreshAccessToken = (callback) => {
@@ -78,5 +74,7 @@ const refreshAccessToken = (callback) => {
         err => {
             console.log("Could not refresh access token", err);
         }
-    );
+    ).catch(rej => {
+        console.log("REJECT: ", rej);
+    });
 };

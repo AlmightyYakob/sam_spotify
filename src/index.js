@@ -4,7 +4,7 @@ import _ from "lodash";
 import { getPlayback } from './spotify-interaction';
 import { postTweet } from './twitter-interaction';
 
-const MINUTES_TO_WAIT = 5;
+const MINUTES_TO_WAIT = 1;
 const MS_TO_WAIT = MINUTES_TO_WAIT*60*1000;
 
 let currentSongID = null;

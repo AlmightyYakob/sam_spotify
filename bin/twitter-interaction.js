@@ -7,7 +7,7 @@ exports.postTweet = void 0;
 
 var _twit = _interopRequireDefault(require("twit"));
 
-var _twitter_credentials = require("./credentials/twitter_credentials.json");
+var _twitter_credentials = require("../credentials/twitter_credentials.json");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
