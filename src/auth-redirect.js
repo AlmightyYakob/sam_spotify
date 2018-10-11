@@ -4,7 +4,7 @@ import {
     client_id,
     client_secret,
     redirect_uri,
-} from "./credentials.json";
+} from "../credentials/spotify_credentials.json";
 
 const scopes = 'user-read-playback-state user-read-currently-playing';
 const spotifyApi = new SpotifyWebApi({
@@ -20,10 +20,7 @@ app.get('/sam-spotify', (req, res) => {
 });
 
 app.get('/sam-spotify/callback', (req, res) => {
-
-    // your application requests refresh and access tokens
-    // after checking the state parameter
-
+    // Callback URI with passed access code.
     res.send("Hey thanks").end();
 
     const code = req.query.code || null;
