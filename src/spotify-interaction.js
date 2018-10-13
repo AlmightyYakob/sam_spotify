@@ -29,6 +29,7 @@ export const getPlayback = (callback) => {
                 console.log("Not playing anything!");
                 callback({});
             } else {
+                // console.log(JSON.stringify(data.body, null, 4));
                 const selected = _.pick(data.body.item,
                     [
                         'external_urls.spotify',
@@ -36,9 +37,11 @@ export const getPlayback = (callback) => {
                         'name',
                         'id',
                         'album.images[0].url',
+                        'is_local',
                     ]
                 );
 
+                // console.log("Current Track: ", selected);
                 callback(selected);
             }
         },
@@ -50,7 +53,7 @@ export const getPlayback = (callback) => {
         }
     ).catch(rej => {
         console.log("REJECT: ", rej);
-    });;
+    });
 };
 
 const refreshAccessToken = (callback) => {
@@ -58,7 +61,7 @@ const refreshAccessToken = (callback) => {
         data => {
             // Save the access token so that it's used in future calls
             spotifyApi.setAccessToken(data.body.access_token);
-            console.log(data.body.access_token);
+            // console.log(data.body.access_token);
 
             console.log("The access token has been refreshed!");
 

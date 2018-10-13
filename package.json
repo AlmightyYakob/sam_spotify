@@ -4,10 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "yarn test && babel-node ./src/index.js",
+    "single_run": "yarn babel-node ./src/index.js",
+    "start": "yarn prod-start",
+    "stop": "yarn prod-stop",
+    "restart": "yarn stop && yarn start",
     "test": "eslint ./src/*.js",
     "build": "yarn babel src/ --out-dir bin/ --copy-files",
-    "prod-start": "pm2 start bin/index.js -n sam-spotify --log-date-format 'DD-MM HH:mm:ss'"
+    "prod-start": "pm2 start bin/index.js -n sam-spotify --log-date-format 'DD-MM HH:mm:ss'",
+    "prod-stop": "pm2 delete sam-spotify"
   },
   "dependencies": {
     "cookie-parser": "^1.4.3",
@@ -15,6 +19,7 @@
     "express": "^4.16.3",
     "fs": "^0.0.1-security",
     "lodash": "^4.17.11",
+    "node-fetch": "^2.2.0",
     "path": "^0.12.7",
     "querystring": "^0.2.0",
     "request": "^2.88.0",
@@ -26,6 +31,7 @@
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
     "@babel/node": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "eslint": "^5.6.1",
     "nodemon": "^1.18.4"

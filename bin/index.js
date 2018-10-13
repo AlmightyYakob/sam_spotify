@@ -9,17 +9,19 @@ var _twitterInteraction = require("./twitter-interaction");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import fs from "fs";
-var MINUTES_TO_WAIT = 1;
-var MS_TO_WAIT = MINUTES_TO_WAIT * 60 * 1000;
-var currentSongID = null;
+const MINUTES_TO_WAIT = 1;
+const MS_TO_WAIT = MINUTES_TO_WAIT * 60 * 1000;
+let currentSongID = null;
 
-var main = function main() {
-  (0, _spotifyInteraction.getPlayback)(function (res) {
+const main = () => {
+  (0, _spotifyInteraction.getPlayback)(res => {
     if (_lodash.default.isEmpty(res)) {
       currentSongID = null;
     } else if (currentSongID !== res.id) {
       currentSongID = res.id;
       (0, _twitterInteraction.postTweet)(res);
+    } else {
+      console.log('Still Playing the same thing D A W G');
     }
 
     setTimeout(main, MS_TO_WAIT);

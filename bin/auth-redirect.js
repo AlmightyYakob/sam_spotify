@@ -4,41 +4,34 @@ var _spotifyWebApiNode = _interopRequireDefault(require("spotify-web-api-node"))
 
 var _express = _interopRequireDefault(require("express"));
 
-var _credentials = require("./credentials.json");
+var _spotify_credentials = require("../credentials/spotify_credentials.json");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var scopes = 'user-read-playback-state user-read-currently-playing';
-var spotifyApi = new _spotifyWebApiNode.default({
-  clientId: _credentials.client_id,
-  clientSecret: _credentials.client_secret,
-  redirectUri: _credentials.redirect_uri
+const scopes = 'user-read-playback-state user-read-currently-playing';
+const spotifyApi = new _spotifyWebApiNode.default({
+  clientId: _spotify_credentials.client_id,
+  clientSecret: _spotify_credentials.client_secret,
+  redirectUri: _spotify_credentials.redirect_uri
 });
-var authorizationURL = spotifyApi.createAuthorizeURL([scopes]);
-var app = (0, _express.default)();
-app.get('/sam-spotify', function (req, res) {
+const authorizationURL = spotifyApi.createAuthorizeURL([scopes]);
+const app = (0, _express.default)();
+app.get('/sam-spotify', (req, res) => {
   res.redirect(authorizationURL);
 });
-app.get('/sam-spotify/callback', function (req, res) {
-  // your application requests refresh and access tokens
-  // after checking the state parameter
+app.get('/sam-spotify/callback', (req, res) => {
+  // Callback URI with passed access code.
   res.send("Hey thanks").end();
-  var code = req.query.code || null;
+  const code = req.query.code || null;
   console.log(code);
-  spotifyApi.authorizationCodeGrant(code).then(function (data) {
+  spotifyApi.authorizationCodeGrant(code).then(data => {
     console.log('The token expires in ' + data.body['expires_in']);
     console.log('The access token is ' + data.body['access_token']);
     console.log('The refresh token is ' + data.body['refresh_token']); // Set the access token on the API object to use it in later calls
 
     spotifyApi.setAccessToken(data.body.access_token);
     spotifyApi.setRefreshToken(data.body.refresh_token);
-    spotifyApi.getMyCurrentPlaybackState({}).then(function (data) {
-      // Output items
-      console.log("Now Playing: ", data.body);
-    }, function (err) {
-      console.log("Something went wrong!", err);
-    });
-  }, function (err) {
+  }, err => {
     console.log('Something went wrong!', err);
   });
 });

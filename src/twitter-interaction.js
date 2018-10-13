@@ -1,5 +1,5 @@
 import Twit from 'twit';
-// import request from 'request';
+import fetch from 'node-fetch';
 // import fs from "fs";
 // import _ from "lodash";
 
@@ -8,7 +8,6 @@ import {
     api_key_secret,
     access_token,
     access_token_secret,
-    // redirect_uri,
 } from "../credentials/twitter_credentials.json";
 
 const twitter = new Twit({
@@ -18,52 +17,47 @@ const twitter = new Twit({
     access_token_secret,
 });
 
-// const postMedia = () => {
-//     // request({
-//     //     encoding: null,
-//     //     method: 'GET',
-//     //     url: playInfo.album.images[0].url,
-//     // }, (err, res, body) => {
-//     //     if (err) console.log(err);
-//     //     else {
-//     //         const image = body;
-//     //         fs.writeFileSync('./image.png', image);
+const postMedia = (imageURL) => {
+    return new Promise((resolve, reject) => {
+        fetch(imageURL)
+            .then(res => res.buffer())
+            .then(buffer => {
+                const base64String = Buffer.from(buffer, 'binary').toString('base64');
 
-//     //         // twitter.post('media/upload', {
-//     //         //     media_data: image,
-//     //         // },
-//     //         // (err, data) => {
-//     //         //     if (!err) console.log("Post Successful");
-//     //         //     else {
-//     //         //         console.log("ERROR: ", err);
-//     //         //         console.log("DATA: ", data);
-//     //         //     }
-//     //         // });
-//     //     }
-//     // });
+                twitter.post('media/upload', { media_data: base64String },
+                    (err, data) => {
+                        if (!err) {
+                            console.log("Media Upload Successful");
+                            console.log(data);
+                            resolve(data);
+                        }
+                        else reject(err);
+                    });
+            })
+            .catch(err => { console.log("ERROR: ", err); });
+    });
+};
 
-//     // twitter.post('media/upload',
-//     //     {
-//     //         media_data: playInfo.album.images[0].url,
-//     //     },
-//     //     (err, data) => {
-//     //         if (!err) console.log("Post Successful");
-//     //         else {
-//     //             console.log("ERROR: ", err);
-//     //             console.log("DATA: ", data);
-//     //         }
-//     //     });
-// };
+export const postTweet = async (playInfo) => {
+    const params = {};
+    params.status = `Sam is now listening to: ${playInfo.name}`;
+    if (playInfo.is_local && playInfo.artists[0].name == "") params.status = `${params.status}.`;
+    else params.status = `${params.status} by ${playInfo.artists[0].name}.`;
 
-export const postTweet = (playInfo) => {
-    const status = `Sam is now listening to: ${playInfo.name} by ${playInfo.artists[0].name}.`;
-    twitter.post('statuses/update', {
-        status,
-    }, (err, data) => {
-        if (!err) console.log("Post Successful");
+    if (playInfo.external_urls.spotify !== '') params.status = `${params.status}\n\n${playInfo.external_urls.spotify}`;
+
+    if (playInfo.album.images[0].url) {
+        const mediaUploadResponse = await postMedia(playInfo.album.images[0].url).catch(err => { console.log(err); });
+        if (mediaUploadResponse !== undefined) params.media_ids = [mediaUploadResponse.media_id_string];
+    }
+
+    twitter.post('statuses/update', params, (err, data) => {
+        if (!err) console.log("Posted: ", params.status);
         else {
             console.log("ERROR: ", err);
             console.log("DATA: ", data);
         }
     });
 };
+
+// postMedia('https://i.scdn.co/image/523e879decd1378f11721ec75b1b6fb1696fac40');

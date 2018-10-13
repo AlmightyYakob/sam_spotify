@@ -18,6 +18,9 @@ const main = () => {
             currentSongID = res.id;
             postTweet(res);
         }
+        else {
+            console.log('Still Playing the same thing D A W G');
+        }
 
         setTimeout(main, MS_TO_WAIT);
     });

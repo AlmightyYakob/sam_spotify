@@ -35,16 +35,6 @@ app.get('/sam-spotify/callback', (req, res) => {
             // Set the access token on the API object to use it in later calls
             spotifyApi.setAccessToken(data.body.access_token);
             spotifyApi.setRefreshToken(data.body.refresh_token);
-
-            spotifyApi.getMyCurrentPlaybackState({}).then(
-                data => {
-                    // Output items
-                    console.log("Now Playing: ", data.body);
-                },
-                err => {
-                    console.log("Something went wrong!", err);
-                }
-            );
         },
         (err) => {
             console.log('Something went wrong!', err);
