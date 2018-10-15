@@ -11,17 +11,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import fs from "fs";
 const MINUTES_TO_WAIT = 1;
 const MS_TO_WAIT = MINUTES_TO_WAIT * 60 * 1000;
-let currentSongID = null;
+const currentSong = {
+  id: null,
+  name: null
+};
 
 const main = () => {
   (0, _spotifyInteraction.getPlayback)(res => {
     if (_lodash.default.isEmpty(res)) {
-      currentSongID = null;
-    } else if (currentSongID !== res.id) {
-      currentSongID = res.id;
-      (0, _twitterInteraction.postTweet)(res);
+      currentSong.id = null;
+      currentSong.name = null;
+    } else if (currentSong.id !== res.id || currentSong.name !== res.name) {
+      currentSong.id = res.id;
+      currentSong.name = res.name;
+      (0, _twitterInteraction.postTweet)(res).catch(err => {
+        console.log(err);
+      });
     } else {
-      console.log('Still Playing the same thing D A W G');
+      console.log(`Still Playing: ${currentSong.name} - ${currentSong.id}`);
     }
 
     setTimeout(main, MS_TO_WAIT);

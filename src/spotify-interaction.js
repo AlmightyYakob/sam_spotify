@@ -33,10 +33,10 @@ export const getPlayback = (callback) => {
                 const selected = _.pick(data.body.item,
                     [
                         'external_urls.spotify',
-                        'artists[0]',
+                        'artists',
                         'name',
                         'id',
-                        'album.images[0].url',
+                        'album.images',
                         'is_local',
                     ]
                 );

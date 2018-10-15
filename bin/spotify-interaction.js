@@ -35,7 +35,7 @@ const getPlayback = callback => {
       callback({});
     } else {
       // console.log(JSON.stringify(data.body, null, 4));
-      const selected = _lodash.default.pick(data.body.item, ['external_urls.spotify', 'artists[0]', 'name', 'id', 'album.images[0].url', 'is_local']); // console.log("Current Track: ", selected);
+      const selected = _lodash.default.pick(data.body.item, ['external_urls.spotify', 'artists', 'name', 'id', 'album.images', 'is_local']); // console.log("Current Track: ", selected);
 
 
       callback(selected);

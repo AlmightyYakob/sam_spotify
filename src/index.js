@@ -5,21 +5,26 @@ import { getPlayback } from './spotify-interaction';
 import { postTweet } from './twitter-interaction';
 
 const MINUTES_TO_WAIT = 1;
-const MS_TO_WAIT = MINUTES_TO_WAIT*60*1000;
+const MS_TO_WAIT = MINUTES_TO_WAIT * 60 * 1000;
 
-let currentSongID = null;
+const currentSong = {
+    id: null,
+    name: null,
+};
 
 const main = () => {
     getPlayback(res => {
-        if (_.isEmpty(res)){
-            currentSongID = null;
+        if (_.isEmpty(res)) {
+            currentSong.id = null;
+            currentSong.name = null;
         }
-        else if (currentSongID !== res.id) {
-            currentSongID = res.id;
-            postTweet(res);
+        else if (currentSong.id !== res.id || currentSong.name !== res.name) {
+            currentSong.id = res.id;
+            currentSong.name = res.name;
+            postTweet(res).catch(err => { console.log(err); });
         }
         else {
-            console.log('Still Playing the same thing D A W G');
+            console.log(`Still Playing: ${currentSong.name} - ${currentSong.id}`);
         }
 
         setTimeout(main, MS_TO_WAIT);

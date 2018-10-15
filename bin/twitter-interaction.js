@@ -45,10 +45,10 @@ const postTweet = async playInfo => {
   const params = {};
   params.status = `Sam is now listening to: ${playInfo.name}`;
   if (playInfo.is_local && playInfo.artists[0].name == "") params.status = `${params.status}.`;else params.status = `${params.status} by ${playInfo.artists[0].name}.`;
-  if (playInfo.external_urls.spotify !== '') params.status = `${params.status}\n\n${playInfo.external_urls.spotify}`;
+  if (playInfo.external_urls && playInfo.external_urls.spotify !== '') params.status = `${params.status}\n\n${playInfo.external_urls.spotify}`;
 
-  if (playInfo.album.images[0].url) {
-    const mediaUploadResponse = await postMedia(playInfo.album.images[0].url).catch(err => {
+  if (playInfo.album && playInfo.album.images.length > 1 && playInfo.album.images[1].url) {
+    const mediaUploadResponse = await postMedia(playInfo.album.images[1].url).catch(err => {
       console.log(err);
     });
     if (mediaUploadResponse !== undefined) params.media_ids = [mediaUploadResponse.media_id_string];
@@ -60,7 +60,6 @@ const postTweet = async playInfo => {
       console.log("DATA: ", data);
     }
   });
-}; // postMedia('https://i.scdn.co/image/523e879decd1378f11721ec75b1b6fb1696fac40');
-
+};
 
 exports.postTweet = postTweet;
